@@ -21,10 +21,20 @@ error() {
 
 set_keycloak_credentials() {
   $KEYCLOAK_BIN config credentials --server http://localhost:8080 --realm master --user admin --password admin
-  if (( $? != 0 )); then
-    info "Credentials setting error"
+  local exit_code=$?
+  if (( $exit_code != 0 )); then
     exit 1
   fi
+}
+
+create_realm () {
+  info "Realm '$REALM_NAME' does not exist. Creating realm..."
+  "$KEYCLOAK_BIN" create realms -f "$REALM_JSON_FILE"
+}
+
+update_realm() {
+  info "Realm '$REALM_NAME' already exists. Updating realm..."
+  "$KEYCLOAK_BIN" update realms/$REALM_NAME -f "$REALM_JSON_FILE"
 }
 
 set_keycloak_credentials
@@ -33,9 +43,7 @@ set_keycloak_credentials
 $KEYCLOAK_BIN get realms/$REALM_NAME > /dev/null 2>&1
 
 if (( $? != 0 )); then
-  info "Realm '$REALM_NAME' does not exist. Creating realm..."
-  "$KEYCLOAK_BIN" create realms -f "$REALM_JSON_FILE"
+  create_realm
 else
-  info "Realm '$REALM_NAME' already exists. Updating realm..."
-  "$KEYCLOAK_BIN" update realms/$REALM_NAME -f "$REALM_JSON_FILE"
+  update_realm
 fi
