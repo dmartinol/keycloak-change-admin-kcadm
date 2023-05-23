@@ -11,6 +11,11 @@ KEYCLOAK_BIN="/opt/keycloak/bin/kcadm.sh"
 REALM_NAME="heroes"
 REALM_JSON_FILE="/opt/keycloak/bin/realm.json"
 
+
+echo $KCM_KEYCLOAK_SERVER
+echo $KCM_REALM_NAME
+echo $KCM_REALM_JSON_FILE
+
 info() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&1
 }
@@ -20,7 +25,7 @@ error() {
 }
 
 set_keycloak_credentials() {
-  $KEYCLOAK_BIN config credentials --server http://localhost:8080 --realm master --user admin --password admin
+  $KEYCLOAK_BIN config credentials --server http://localhost:8080 --realm master --user admin --client admin-cli
   local exit_code=$?
   if (( $exit_code != 0 )); then
     exit 1
