@@ -23,7 +23,7 @@ error() {
 }
 
 set_keycloak_credentials() {
-  $KEYCLOAK_BIN config credentials --server http://localhost:8080 --realm master --user admin --password admin
+  $KEYCLOAK_BIN config credentials --server https://test-keycloak.apps.ocp-dev01.lab.eng.tlv2.redhat.com --realm master --user admin --password aa1d2c4704494ecdb5451fd660c9f218
   local exit_code=$?
   if (( $exit_code != 0 )); then
     exit 1
