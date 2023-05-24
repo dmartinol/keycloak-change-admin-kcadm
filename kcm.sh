@@ -25,7 +25,7 @@ error() {
 }
 
 set_keycloak_credentials() {
-  $KEYCLOAK_BIN config credentials --server http://localhost:8080 --realm master --user admin --client admin-cli
+  $KEYCLOAK_BIN config credentials --server http://localhost:8080 --realm master --user admin --password admin
   local exit_code=$?
   if (( $exit_code != 0 )); then
     exit 1
