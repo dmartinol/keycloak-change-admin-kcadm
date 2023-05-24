@@ -9,12 +9,7 @@
 
 KEYCLOAK_BIN="/opt/keycloak/bin/kcadm.sh"
 REALM_NAME="heroes"
-REALM_JSON_FILE="/opt/keycloak/bin/realm.json"
-
-
-echo $KCM_KEYCLOAK_SERVER
-echo $KCM_REALM_NAME
-echo $KCM_REALM_JSON_FILE
+REALM_JSON_FILE="demo/realm.json"
 
 info() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&1
@@ -42,13 +37,43 @@ update_realm() {
   "$KEYCLOAK_BIN" update realms/$REALM_NAME -f "$REALM_JSON_FILE"
 }
 
+process_realm() {
+  $KEYCLOAK_BIN get realms/$REALM_NAME > /dev/null 2>&1
+
+  if (( $? != 0 )); then
+    create_realm
+  else
+    update_realm
+  fi
+}
+
+process_clients() {
+for file in demo/clients/*.json; do
+  local CLIENT_JSON_FILE=$(realpath "$file")
+  local clientID=$(jq -r '.clientId' $CLIENT_JSON_FILE)
+  info "Processed file $CLIENT_JSON_FILE with ClientID: $clientID"
+  id=$($KEYCLOAK_BIN get clients -r $REALM_NAME --fields id,clientId | jq -r --arg clientID $clientID '.[] | select(.clientId == $clientID) | .id')
+  if [[ -n "$id" ]]; then
+    update_client "$id" "$CLIENT_JSON_FILE"
+  else
+    create_client "$CLIENT_JSON_FILE"
+  fi
+done
+}
+
+update_client() {
+  local clientID="$1"
+  local fileName="$2"
+  info "Updating client $clientID"
+  "$KEYCLOAK_BIN" update clients/$clientID -r $REALM_NAME -f "$fileName"
+}
+
+create_client() {
+  local fileName="$1"
+  info "Creating client $clientID"
+  "$KEYCLOAK_BIN" create clients -r $REALM_NAME -f "$fileName"
+}
+
 set_keycloak_credentials
-
-# Check if realm exists
-$KEYCLOAK_BIN get realms/$REALM_NAME > /dev/null 2>&1
-
-if (( $? != 0 )); then
-  create_realm
-else
-  update_realm
-fi
+process_realm
+process_clients
