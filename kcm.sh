@@ -7,9 +7,12 @@
 # TODO: Refactor script to use env vars for keycloack server and credentials.
 # TODO: Add error handling for the execution of the command
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEMO_DIR="${SCRIPT_DIR}/demo"
+
 KEYCLOAK_BIN="/opt/keycloak/bin/kcadm.sh"
 REALM_NAME="heroes"
-REALM_JSON_FILE="demo/realm.json"
+REALM_JSON_FILE="${DEMO_DIR}/realm.json"
 
 info() {
   echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&1
@@ -48,10 +51,10 @@ process_realm() {
 }
 
 process_clients() {
-for file in demo/clients/*.json; do
+for file in ${DEMO_DIR}/clients/*.json; do
   local CLIENT_JSON_FILE=$(realpath "$file")
   local clientID=$(jq -r '.clientId' $CLIENT_JSON_FILE)
-  info "Processed file $CLIENT_JSON_FILE with ClientID: $clientID"
+  info "Processing file $CLIENT_JSON_FILE with ClientID: $clientID"
   id=$($KEYCLOAK_BIN get clients -r $REALM_NAME --fields id,clientId | jq -r --arg clientID $clientID '.[] | select(.clientId == $clientID) | .id')
   if [[ -n "$id" ]]; then
     update_client "$id" "$CLIENT_JSON_FILE"
