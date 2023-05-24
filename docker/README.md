@@ -1,7 +1,8 @@
 # Minimal Docker image with kcadm.sh script
 
-Build and push the image:
+Build and push the image after downloading the cluster certificate from the Keycloak cluster:
 ```bash
+oc get -n openshift-ingress-operator secret router-ca -o jsonpath="{.data.tls\.crt}" | base64 -d > ca-bundle.crt
 docker build -t quay.io/dmartino/kcadm:latest .
 docker login quay.io
 docker push quay.io/dmartino/kcadm:latest

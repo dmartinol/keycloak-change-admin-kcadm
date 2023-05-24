@@ -5,6 +5,10 @@ WORKDIR /opt/keycloak/bin
 ARG KEYCLOAK_VERSION=21.1.1
 
 USER root
+COPY ca-bundle.crt /etc/pki/ca-trust/source/anchors
+RUN update-ca-trust extract
+RUN trust list --filter=ca-anchors | grep ingress -A3
+
 RUN microdnf install -y jq
 RUN mkdir -p /opt/keycloak/bin/client/lib/
 
