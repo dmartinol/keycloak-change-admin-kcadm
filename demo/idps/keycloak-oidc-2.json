@@ -1,0 +1,13 @@
+{
+  "alias": "keycloak-oidc-2",
+  "providerId": "keycloak-oidc",
+  "enabled": true,
+  "updateProfileFirstLoginMode": "on",
+  "trustEmail": false,
+  "storeToken": false,
+  "addReadTokenRoleOnCreate": false,
+  "authenticateByDefault": false,
+  "linkOnly": false,
+  "firstBrokerLoginFlowAlias": "first broker login",
+  "config": {}
+}

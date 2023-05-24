@@ -1,0 +1,49 @@
+{
+  "clientId": "rest-api",
+  "name": "rest-api",
+  "adminUrl": "http://localhost:4300",
+  "alwaysDisplayInConsole": false,
+  "access": {
+    "view": true,
+    "configure": true,
+    "manage": true
+  },
+  "attributes": {},
+  "authenticationFlowBindingOverrides": {},
+  "authorizationServicesEnabled": false,
+  "bearerOnly": false,
+  "directAccessGrantsEnabled": true,
+  "enabled": true,
+  "protocol": "openid-connect",
+  "description": "rest-api",
+
+  "rootUrl": "${authBaseUrl}",
+  "baseUrl": "/realms/heroes/account/",
+  "surrogateAuthRequired": false,
+  "clientAuthenticatorType": "client-secret",
+  "defaultRoles": ["manage-account", "view-profile"],
+  "redirectUris": ["/realms/heroes/account/*"],
+  "webOrigins": [],
+  "notBefore": 0,
+  "consentRequired": false,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "serviceAccountsEnabled": false,
+  "publicClient": false,
+  "frontchannelLogout": false,
+  "fullScopeAllowed": false,
+  "nodeReRegistrationTimeout": 0,
+  "defaultClientScopes": [
+    "web-origins",
+    "role_list",
+    "profile",
+    "roles",
+    "email"
+  ],
+  "optionalClientScopes": [
+    "address",
+    "phone",
+    "offline_access",
+    "microprofile-jwt"
+  ]
+}
